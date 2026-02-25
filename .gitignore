@@ -1,0 +1,58 @@
+# -----------------------------
+# Python
+# -----------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env/
+.venv/
+ENV/
+
+# Packaging / distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+*.whl
+
+# Ruff / lint / caches
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.cache/
+
+# -----------------------------
+# OS / Editor
+# -----------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# -----------------------------
+# Logs / temp
+# -----------------------------
+*.log
+*.tmp
+
+# -----------------------------
+# Environment / secrets
+# -----------------------------
+.env
+.env.*
+*.env
+
+# -----------------------------
+# Node (only if ever used)
+# -----------------------------
+node_modules/
+.vercel/
+
+# -----------------------------
+# Misc
+# -----------------------------
+*.sqlite3
+*.db
