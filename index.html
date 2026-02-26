@@ -249,15 +249,16 @@
 <section class="hero">
   <div class="badge"><span class="badge-dot"></span>Powered by Groq — fastest LLM inference</div>
   <h1>Your Terminal,<br/><span class="shimmer">Understood.</span></h1>
-  <p class="hero-sub">Plain English in. Exact shell command out. With a safety engine that protects you before anything runs.</p>
+  <p class="hero-sub">Plain English in. Exact shell command out. A safety engine classifies every command before anything runs.</p>
 
   <div class="install-wrap">
     <div class="tab-row">
-      <button class="tab active" onclick="switchTab(this,'pip')">pip</button>
+      <button class="tab active" onclick="switchTab(this,'pipx')">pipx</button>
+      <button class="tab" onclick="switchTab(this,'pip')">pip</button>
       
     </div>
     <div class="install-cmd">
-      <code id="icmd"><span class="p">$ </span>pip install shellspark</code>
+      <code id="icmd"><span class="p">$ </span>pipx install shellspark</code>
       <button class="copy" onclick="copyCmd(this)">copy</button>
     </div>
   </div>
@@ -283,7 +284,7 @@
   <div class="feat-grid stagger">
     <div class="feat"><div class="feat-num">01</div><h3>Natural Language</h3><p>Describe what you want in plain English. ShellSpark figures out the exact command for your system.</p></div>
     <div class="feat"><div class="feat-num">02</div><h3>Safety Engine</h3><p>Every command is classified SAFE, WARNING, or BLOCKED before it ever runs. Dangerous commands are stopped automatically.</p></div>
-    <div class="feat"><div class="feat-num">03</div><h3>Dry-Run Default</h3><p>Commands are shown but never executed unless you add <code style="font-family:var(--mono);font-size:0.85em">--run</code>. See before you act, always.</p></div>
+    <div class="feat"><div class="feat-num">03</div><h3>Dry-Run Default</h3><p>Commands are shown but never executed unless you add <code style="font-family:var(--mono);font-size:0.85em">--run</code>. The default mode is always show-only.</p></div>
     <div class="feat"><div class="feat-num">04</div><h3>Explain Mode</h3><p>Add <code style="font-family:var(--mono);font-size:0.85em">--explain</code> to get a plain-English breakdown of what any generated command actually does.</p></div>
     <div class="feat"><div class="feat-num">05</div><h3>Distro-Aware</h3><p>Auto-detects your distro and package manager. Ubuntu, Fedora, Arch, Alpine, macOS — always the right command.</p></div>
     <div class="feat"><div class="feat-num">06</div><h3>Activity Logging</h3><p>Every command, its risk level, and exit code is logged to <code style="font-family:var(--mono);font-size:0.85em">~/.shellspark/logs/activity.log</code>.</p></div>
@@ -396,7 +397,7 @@
           <span class="risk-badge tag-safe" id="risk-badge">✓ SAFE</span>
         </div>
         <div class="safety-panel-body" id="safety-body">
-          <div style="color:var(--muted2);font-size:0.72rem;margin-bottom:0.75rem">$ shellspark update my system --run</div>
+          <div style="color:var(--muted2);font-size:0.72rem;margin-bottom:0.75rem">$ sx update my system --run</div>
           <div style="color:var(--muted2);font-size:0.72rem;margin-bottom:0.5rem">⏳ Generating...</div>
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:0.75rem 0.9rem;margin-bottom:1rem">
             <span id="s-cmd-display" style="color:var(--text)">sudo apt update && sudo apt upgrade -y</span>
@@ -505,8 +506,9 @@
     <div class="step">
       <div class="step-n">01</div>
       <div class="step-body">
-        <div class="step-title">Install ShellSpark</div>
-        <div class="step-cmd"><span>pip install shellspark</span><button class="copy" onclick="copyText(this,'pip install shellspark')">copy</button></div>
+        <div class="step-title">Install ShellSpark (pipx recommended for CLI isolation)</div>
+        <div class="step-cmd"><span>pipx install shellspark</span><button class="copy" onclick="copyText(this,'pipx install shellspark')">copy</button></div>
+        <div class="step-cmd" style="margin-top:0.5rem;opacity:0.6"><span>pip install shellspark</span><button class="copy" onclick="copyText(this,'pip install shellspark')">copy</button></div>
       </div>
     </div>
     <div class="step">
@@ -519,8 +521,8 @@
     <div class="step">
       <div class="step-n">03</div>
       <div class="step-body">
-        <div class="step-title">Generate your first command (shown, not run)</div>
-        <div class="step-cmd"><span>shellspark update my system</span><button class="copy" onclick="copyText(this,'shellspark update my system')">copy</button></div>
+        <div class="step-title">Generate your first command (shown, not run) — use shellspark or the sx alias</div>
+        <div class="step-cmd"><span>sx update my system</span><button class="copy" onclick="copyText(this,'sx update my system')">copy</button></div>
       </div>
     </div>
   </div>
@@ -533,6 +535,7 @@
   <div class="reveal"><div class="s-label">FAQ</div><h2>Common questions.</h2></div>
   <div class="faq-list reveal" style="transition-delay:0.1s">
     <div class="faq-item"><button class="faq-q" onclick="faq(this)">What is ShellSpark?<span class="faq-icon">+</span></button><div class="faq-a">ShellSpark is an open-source CLI tool that converts plain English into distribution-specific bash commands, with a built-in safety engine powered by Groq's fast LLM inference.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)">What is the sx alias?<span class="faq-icon">+</span></button><div class="faq-a"><code style="font-family:var(--mono)">sx</code> is the official short alias for <code style="font-family:var(--mono)">shellspark</code>. Both commands are identical — <code style="font-family:var(--mono)">sx</code> is provided as a convenience shorthand. Use whichever you prefer.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="faq(this)">Does it execute commands automatically?<span class="faq-icon">+</span></button><div class="faq-a">No. By default ShellSpark only shows the generated command. You must add <code style="font-family:var(--mono)">--run</code> to execute it. This is intentional — see before you act.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="faq(this)">What does the safety engine block?<span class="faq-icon">+</span></button><div class="faq-a">BLOCKED commands include: rm -rf on root/system dirs, dd to raw block devices, mkfs, fork bombs, disk wipers, and redirecting output to /dev/sda. WARNING commands (rm -rf on user dirs, curl | bash, shutdown, etc.) require typing 'yes' to confirm.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="faq(this)">What is --explain mode?<span class="faq-icon">+</span></button><div class="faq-a">Adding <code style="font-family:var(--mono)">--explain</code> generates the command as normal, then asks the AI to describe in plain English what it does — great for learning or verifying before running.</div></div>
@@ -572,10 +575,10 @@ const demo = document.getElementById("demo-terminal");
 
 const demoFlows = {
   dry: [
-    "~$ shellspark list files",
+    "~$ sx list files",
     "⏳ Generating...",
     "  ls -la",
-    "✓ SAFE  ·  💡 Add --run to execute."
+    "✓ SAFE  ·  Add --run to execute."
   ],
 
   safe: [
@@ -679,7 +682,7 @@ animateDemo(demoFlows.dry);
 /* ── TYPEWRITER — shows --run, safety, --explain ── */
 (function(){
   const lines=[
-    {type:'cmd', text:'shellspark update my system'},
+    {type:'cmd', text:'sx update my system'},
     {type:'out', text:'⏳ Generating...'},
     {type:'sep'},
     {type:'out', text:'  sudo apt update && sudo apt upgrade -y'},
@@ -746,7 +749,7 @@ const flowObs=new IntersectionObserver(entries=>{
 document.querySelectorAll('.flow-step').forEach(el=>flowObs.observe(el));
 
 /* ── TABS ── */
-const cmds={pip:'pip install shellspark',curl:'curl -sSL https://shellspark.dev/install | bash',direct:'python3 shellspark/__main__.py --help'};
+const cmds={pipx:'pipx install shellspark',pip:'pip install shellspark',curl:'curl -sSL https://shellspark.dev/install | bash',direct:'python3 shellspark/__main__.py --help'};
 function switchTab(btn,key){document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('icmd').innerHTML=`<span class="p">$ </span>${cmds[key]}`;}
 function copyCmd(btn){const t=document.getElementById('icmd').textContent.replace(/^\$\s*/,'');navigator.clipboard.writeText(t).then(()=>{btn.textContent='copied!';setTimeout(()=>btn.textContent='copy',2000)});}
 function copyText(btn,text){navigator.clipboard.writeText(text).then(()=>{btn.textContent='copied!';setTimeout(()=>btn.textContent='copy',2000)});}
