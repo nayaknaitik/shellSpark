@@ -3,10 +3,14 @@ safety.py — Command safety classification engine for ShellSpark.
 
 Classifies any shell command as SAFE, WARNING, or BLOCKED before execution.
 Uses structured pattern matching — not just substring search.
+Supports intent-aware safety policies based on detected intent type.
 """
 
 import re
 from enum import Enum
+from typing import Optional
+
+from .intent import IntentType as IntentTypeEnum
 
 
 class Risk(Enum):
@@ -208,24 +212,75 @@ _WARNING: list[tuple[re.Pattern, str]] = [
 ]
 
 
-def classify(command: str) -> SafetyResult:
+def classify(command: str, intent: Optional[IntentTypeEnum] = None) -> SafetyResult:
     """
     Analyse a shell command and return a SafetyResult.
 
     Order of precedence: BLOCKED > WARNING > SAFE
+
+    Args:
+        command: The shell command to classify
+        intent: Optional detected intent type for intent-aware policy enforcement
     """
-    # Strip leading/trailing whitespace for cleaner matching
     cmd = command.strip()
 
     for pattern, reason in _BLOCKED:
         if pattern.search(cmd):
             return SafetyResult(Risk.BLOCKED, reason)
 
+    if intent == IntentTypeEnum.DELETE:
+        delete_blocked_reason = _classify_delete_intent(cmd)
+        if delete_blocked_reason:
+            return SafetyResult(Risk.BLOCKED, delete_blocked_reason)
+
     for pattern, reason in _WARNING:
         if pattern.search(cmd):
             return SafetyResult(Risk.WARNING, reason)
 
     return SafetyResult(Risk.SAFE)
+
+
+def _classify_delete_intent(command: str) -> Optional[str]:
+    """
+    Apply additional safety scrutiny for DELETE intent commands.
+    Returns a reason string if the command should be blocked, None otherwise.
+    """
+    cmd = command.lower()
+
+    if re.search(r"\brm\s+.*-[a-zA-Z]*r[a-zA-Z]*f\b", cmd):
+        return "Recursive forced deletion — too risky to execute automatically"
+
+    if re.search(r"\brm\s+-rf\s+/", cmd):
+        return "Recursive forced deletion of root filesystem"
+
+    if re.search(r"\brm\s+.*\s+/", cmd):
+        return "Deletion of absolute path — safety violation"
+
+    if re.search(r"\brm\s+.*\s+\*\s*$", cmd):
+        return "Wildcard deletion in current directory"
+
+    if re.search(r"\bsudo\s+rm\b", cmd):
+        return "Privileged deletion requires manual confirmation"
+
+    if re.search(r"\brm\s+-rf\s+\.", cmd):
+        return "Deletion of current directory tree"
+
+    if re.search(r"\bremove\s+.*-rf\b", cmd):
+        return "Recursive forced removal detected"
+
+    if re.search(r"\bdel\s+.*/s/q\b", cmd):
+        return "Windows recursive forced deletion"
+
+    if re.search(r"\brmdir\s+/", cmd):
+        return "Removing directory tree from root"
+
+    if re.search(r"\btruncate\b.*-s\s+0\b", cmd):
+        return "Truncating file to zero size"
+
+    if re.search(r"\bshred\b.*-z\b", cmd):
+        return "Secure file shredding"
+
+    return None
 
 
 def display_safety(result: SafetyResult) -> None:

@@ -220,7 +220,43 @@
 
     @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 
+    /* ARCHITECTURE SECTION */
+    .arch-section{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;z-index:1}
+    .arch-inner{max-width:1000px;margin:0 auto;padding:5rem 2rem}
+
+    /* Pipeline visualization */
+    .pipeline{display:flex;align-items:stretch;gap:0;margin-top:3rem;overflow-x:auto;padding-bottom:0.5rem}
+    .pipe-node{flex:1;min-width:140px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative}
+    .pipe-node:not(:last-child)::after{content:'';position:absolute;right:-1px;top:50%;transform:translateY(-50%);width:2px;height:32px;background:linear-gradient(180deg,transparent,var(--border2),transparent);z-index:2}
+    .pipe-box{width:100%;border:1px solid var(--border);border-radius:6px;padding:1.25rem 0.9rem;background:var(--bg2);cursor:default;transition:border-color 0.25s,background 0.25s;position:relative;overflow:hidden}
+    .pipe-box::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(245,241,235,0.1),transparent);transition:left 0.5s ease}
+    .pipe-node:hover .pipe-box::before{left:100%}
+    .pipe-node:hover .pipe-box{border-color:var(--border2);background:var(--dim)}
+    .pipe-arrow{display:flex;align-items:center;justify-content:center;width:2rem;flex-shrink:0;color:var(--muted2);font-family:var(--mono);font-size:0.8rem;opacity:0.5}
+    .pipe-icon{font-family:var(--mono);font-size:0.65rem;color:var(--muted2);margin-bottom:0.6rem;letter-spacing:0.06em;text-transform:uppercase}
+    .pipe-label{font-size:0.8rem;font-weight:500;color:var(--white);letter-spacing:-0.01em;line-height:1.3}
+    .pipe-sub{font-size:0.7rem;color:var(--muted);margin-top:0.35rem;line-height:1.5;font-weight:300}
+    .pipe-tag{display:inline-block;font-family:var(--mono);font-size:0.6rem;padding:0.15rem 0.45rem;border-radius:3px;margin-top:0.6rem;letter-spacing:0.04em}
+    .pipe-tag.deterministic{background:rgba(74,100,140,0.12);color:#7090c0;border:1px solid rgba(74,100,140,0.25)}
+    .pipe-tag.intent{background:var(--ok-dim);color:#6aaa7a;border:1px solid rgba(74,122,90,0.25)}
+    .pipe-tag.ai{background:rgba(100,80,140,0.12);color:#9080c0;border:1px solid rgba(100,80,140,0.25)}
+    .pipe-tag.safety{background:var(--warn-dim);color:#c8a050;border:1px solid rgba(122,106,58,0.25)}
+    .pipe-tag.unknown{background:var(--block-dim);color:#c86060;border:1px solid rgba(122,58,58,0.25)}
+
+    /* Principles grid */
+    .principles{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:3rem;background:var(--border)}
+    .principle{background:var(--bg2);padding:1.5rem 1.25rem;transition:background 0.2s;position:relative;overflow:hidden}
+    .principle:hover{background:var(--dim)}
+    .principle::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(245,241,235,0.015) 0%,transparent 60%);pointer-events:none}
+    .principle-n{font-family:var(--mono);font-size:0.62rem;color:var(--muted2);margin-bottom:0.75rem;letter-spacing:0.06em}
+    .principle h3{font-size:0.825rem;font-weight:500;color:var(--white);margin-bottom:0.4rem;letter-spacing:-0.01em}
+    .principle p{font-size:0.78rem;color:var(--muted);line-height:1.6;font-weight:300}
+
     @media(max-width:768px){
+      .pipeline{flex-direction:column;gap:0.5rem}
+      .pipe-node::after{display:none}
+      .pipe-arrow{transform:rotate(90deg)}
+      .principles{grid-template-columns:1fr}
       .nav-links li:not(:last-child){display:none}
       .feat-grid{grid-template-columns:1fr}
       .feat{border-bottom:1px solid var(--border)!important}
@@ -237,6 +273,7 @@
   <a href="#" class="logo"><span class="logo-icon">⚡</span> shellspark</a>
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
+    <li><a href="#architecture">Architecture</a></li>
     <li><a href="#how">How it works</a></li>
     <li><a href="#safety">Safety</a></li>
     <li><a href="#examples">Examples</a></li>
@@ -278,16 +315,94 @@
 <div class="features-wrap" id="features">
   <div style="max-width:1000px;margin:0 auto;padding:3rem 2rem 2rem" class="reveal">
     <div class="s-label">Features</div>
-    <h2>Everything your terminal was missing.</h2>
-    <p class="s-desc">Built for developers who want power without memorizing every flag — safely.</p>
+    <h2>Designed for predictability.</h2>
+    <p class="s-desc">Built for developers who need to trust the output — not just read it.</p>
   </div>
   <div class="feat-grid stagger">
-    <div class="feat"><div class="feat-num">01</div><h3>Natural Language</h3><p>Describe what you want in plain English. ShellSpark figures out the exact command for your system.</p></div>
-    <div class="feat"><div class="feat-num">02</div><h3>Safety Engine</h3><p>Every command is classified SAFE, WARNING, or BLOCKED before it ever runs. Dangerous commands are stopped automatically.</p></div>
+    <div class="feat"><div class="feat-num">01</div><h3>Natural Language</h3><p>Describe what you want in plain English. ShellSpark resolves the exact command for your system — no guessing.</p></div>
+    <div class="feat"><div class="feat-num">02</div><h3>Intent-Aware Safety Engine</h3><p>Every command is classified SAFE, WARNING, or BLOCKED before it ever runs. Dangerous commands are stopped unconditionally.</p></div>
     <div class="feat"><div class="feat-num">03</div><h3>Dry-Run Default</h3><p>Commands are shown but never executed unless you add <code style="font-family:var(--mono);font-size:0.85em">--run</code>. The default mode is always show-only.</p></div>
     <div class="feat"><div class="feat-num">04</div><h3>Explain Mode</h3><p>Add <code style="font-family:var(--mono);font-size:0.85em">--explain</code> to get a plain-English breakdown of what any generated command actually does.</p></div>
-    <div class="feat"><div class="feat-num">05</div><h3>Distro-Aware</h3><p>Auto-detects your distro and package manager. Ubuntu, Fedora, Arch, Alpine, macOS — always the right command.</p></div>
+    <div class="feat"><div class="feat-num">05</div><h3>Deterministic Resolver</h3><p>Common operations are resolved from a curated, verified map — not generated. AI is only invoked when deterministic resolution is impossible.</p></div>
     <div class="feat"><div class="feat-num">06</div><h3>Activity Logging</h3><p>Every command, its risk level, and exit code is logged to <code style="font-family:var(--mono);font-size:0.85em">~/.shellspark/logs/activity.log</code>.</p></div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- ARCHITECTURE -->
+<div class="arch-section" id="architecture">
+  <div class="arch-inner">
+    <div class="reveal">
+      <div class="s-label">Architecture</div>
+      <h2>Deterministic first. AI as fallback.</h2>
+      <p class="s-desc">ShellSpark never guesses. Every query passes through a structured resolution pipeline. AI is only invoked when deterministic resolution produces no match.</p>
+    </div>
+
+    <div class="pipeline reveal" style="transition-delay:0.1s;gap:0.5rem;align-items:stretch">
+      <div class="pipe-node">
+        <div class="pipe-box">
+          <div class="pipe-icon">input</div>
+          <div class="pipe-label">User Query</div>
+          <div class="pipe-sub">Plain English. No flags required.</div>
+          <span class="pipe-tag intent">intent</span>
+        </div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-node">
+        <div class="pipe-box">
+          <div class="pipe-icon">layer 1</div>
+          <div class="pipe-label">Intent Engine</div>
+          <div class="pipe-sub">Parses operation class. Ambiguous input stops here.</div>
+          <span class="pipe-tag intent">intent-aware</span>
+        </div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-node">
+        <div class="pipe-box">
+          <div class="pipe-icon">layer 2</div>
+          <div class="pipe-label">Deterministic Resolver</div>
+          <div class="pipe-sub">Verified command map. No LLM call if a match is found.</div>
+          <span class="pipe-tag deterministic">deterministic</span>
+        </div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-node">
+        <div class="pipe-box">
+          <div class="pipe-icon">layer 3</div>
+          <div class="pipe-label">AI Fallback</div>
+          <div class="pipe-sub">Groq LLM. Invoked only when resolver finds no match.</div>
+          <span class="pipe-tag ai">fallback only</span>
+        </div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-node">
+        <div class="pipe-box">
+          <div class="pipe-icon">layer 4</div>
+          <div class="pipe-label">Safety Engine</div>
+          <div class="pipe-sub">Classifies every output. UNKNOWN is a valid, safe result.</div>
+          <span class="pipe-tag safety">classify</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="principles reveal stagger" style="transition-delay:0.2s">
+      <div class="principle">
+        <div class="principle-n">01 · principle</div>
+        <h3>Predictability over creativity</h3>
+        <p>Curated, verified commands are always preferred over AI-generated ones. ShellSpark does not invent new paths — it selects known, correct ones.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-n">02 · principle</div>
+        <h3>UNKNOWN is a safety feature</h3>
+        <p>When intent is unclear or resolution is uncertain, ShellSpark returns UNKNOWN. This is intentional. Returning nothing is safer than returning a guess.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-n">03 · principle</div>
+        <h3>AI is constrained, not trusted</h3>
+        <p>AI output is treated as a candidate, not an answer. It is always passed through the safety engine before you see it. The safety engine has the final word — not the model.</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -298,48 +413,58 @@
   <div class="reveal">
     <div class="s-label">How it works</div>
     <h2>Five steps, zero surprises.</h2>
-    <p class="s-desc">Every query goes through a clear pipeline before anything touches your system.</p>
+    <p class="s-desc">Every query passes through a structured pipeline before anything touches your system.</p>
   </div>
   <div class="flow" id="flow">
     <div class="flow-step">
       <div class="flow-n">01</div>
       <div class="flow-body">
         <h3>You type a natural language query</h3>
-        <p>No flags, no man pages. Just describe what you want to do.</p>
-        <span class="flow-tag tag-info">shellspark find files larger than 1GB</span>
+        <p>No flags, no man pages. Describe what you want to do. ShellSpark never prompts you for clarification — it resolves intent or returns UNKNOWN.</p>
+        <span class="flow-tag tag-info">sx find files larger than 1GB</span>
       </div>
     </div>
     <div class="flow-step">
       <div class="flow-n">02</div>
       <div class="flow-body">
-        <h3>ShellSpark detects your system</h3>
-        <p>Reads <code style="font-family:var(--mono);font-size:0.9em">/etc/os-release</code> to identify your distro and maps it to the right package manager — apt, dnf, pacman, brew, and more.</p>
+        <h3>Intent engine parses the query</h3>
+        <p>The intent engine maps your input to a known operation class. If the intent is unambiguous, it proceeds to deterministic resolution. Ambiguous queries do not proceed to AI automatically.</p>
       </div>
     </div>
     <div class="flow-step">
       <div class="flow-n">03</div>
       <div class="flow-body">
-        <h3>Groq AI generates the command</h3>
-        <p>Your query + system context is sent to Groq's LLM. Only the query text is transmitted — no files, no credentials, no environment data.</p>
+        <h3>Deterministic resolver runs first</h3>
+        <p>ShellSpark checks a curated, verified command map before invoking AI. Common operations are resolved without an LLM call. Reads <code style="font-family:var(--mono);font-size:0.9em">/etc/os-release</code> to select the correct package manager — apt, dnf, pacman, brew, and more.</p>
+        <span class="flow-tag tag-info">deterministic · no AI required</span>
       </div>
     </div>
     <div class="flow-step">
       <div class="flow-n">04</div>
       <div class="flow-body">
-        <h3>Safety engine classifies the command</h3>
-        <p>Before you see it, the command is analysed against structured patterns. Destructive operations are blocked. Risky ones require explicit confirmation.</p>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem">
-          <span class="flow-tag tag-safe">✓ SAFE</span>
-          <span class="flow-tag tag-warn">⚠ WARNING — type 'yes'</span>
-          <span class="flow-tag tag-block">✗ BLOCKED — never runs</span>
-        </div>
+        <h3>AI is the fallback, not the authority</h3>
+        <p>When deterministic resolution does not produce a match, your query and system context are sent to Groq's LLM. Only the query text is transmitted — no files, credentials, or environment data. If AI cannot resolve with confidence, the result is UNKNOWN — not a guess.</p>
+        <span class="flow-tag tag-info">AI invoked only when necessary</span>
       </div>
     </div>
     <div class="flow-step">
       <div class="flow-n">05</div>
       <div class="flow-body">
+        <h3>Intent-aware safety engine classifies the output</h3>
+        <p>Every resolved command — whether from the deterministic map or AI — is analysed against structured safety patterns. Destructive operations are blocked. Risky ones require explicit confirmation. UNKNOWN is returned when classification cannot be made with certainty.</p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem">
+          <span class="flow-tag tag-safe">✓ SAFE</span>
+          <span class="flow-tag tag-warn">⚠ WARNING — type 'yes'</span>
+          <span class="flow-tag tag-block">✗ BLOCKED — never runs</span>
+          <span class="flow-tag tag-block">? UNKNOWN — not executed</span>
+        </div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-n">06</div>
+      <div class="flow-body">
         <h3>You decide — run, explain, or cancel</h3>
-        <p>Default shows the command only. Add <code style="font-family:var(--mono);font-size:0.9em">--run</code> to execute, or <code style="font-family:var(--mono);font-size:0.9em">--explain</code> to get a plain-English breakdown first.</p>
+        <p>Default shows the command only. Add <code style="font-family:var(--mono);font-size:0.9em">--run</code> to execute, or <code style="font-family:var(--mono);font-size:0.9em">--explain</code> to get a plain-English breakdown first. Nothing executes without your explicit intent.</p>
       </div>
     </div>
   </div>
@@ -352,8 +477,8 @@
   <div class="safety-inner">
     <div class="reveal">
       <div class="s-label">Safety Engine</div>
-      <h2>Know before you run.</h2>
-      <p class="s-desc">Every generated command is classified before it reaches your terminal. BLOCKED commands never execute — ever.</p>
+      <h2>Intent-aware. Outcome-certain.</h2>
+      <p class="s-desc">Every command — regardless of source — is classified before it reaches your terminal. BLOCKED and UNKNOWN commands never execute.</p>
     </div>
     <div class="safety-layout reveal" style="transition-delay:0.1s">
       <div class="safety-list stagger">
@@ -536,7 +661,8 @@
   <div class="faq-list reveal" style="transition-delay:0.1s">
     <div class="faq-item"><button class="faq-q" onclick="faq(this)">What is ShellSpark?<span class="faq-icon">+</span></button><div class="faq-a">ShellSpark is an open-source CLI tool that converts plain English into distribution-specific bash commands, with a built-in safety engine powered by Groq's fast LLM inference.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="faq(this)">What is the sx alias?<span class="faq-icon">+</span></button><div class="faq-a"><code style="font-family:var(--mono)">sx</code> is the official short alias for <code style="font-family:var(--mono)">shellspark</code>. Both commands are identical — <code style="font-family:var(--mono)">sx</code> is provided as a convenience shorthand. Use whichever you prefer.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="faq(this)">Does it execute commands automatically?<span class="faq-icon">+</span></button><div class="faq-a">No. By default ShellSpark only shows the generated command. You must add <code style="font-family:var(--mono)">--run</code> to execute it. This is intentional — see before you act.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)">Does it execute commands automatically?<span class="faq-icon">+</span></button><div class="faq-a">No. By default ShellSpark only shows the generated command. You must add <code style="font-family:var(--mono)">--run</code> to execute it. This is intentional — nothing runs without explicit user action.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)">What does UNKNOWN mean?<span class="faq-icon">+</span></button><div class="faq-a">UNKNOWN is returned when ShellSpark cannot resolve your query with sufficient confidence — either because intent is ambiguous or AI output did not meet the safety threshold. UNKNOWN commands are never executed. Returning nothing is safer than returning a guess.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="faq(this)">What does the safety engine block?<span class="faq-icon">+</span></button><div class="faq-a">BLOCKED commands include: rm -rf on root/system dirs, dd to raw block devices, mkfs, fork bombs, disk wipers, and redirecting output to /dev/sda. WARNING commands (rm -rf on user dirs, curl | bash, shutdown, etc.) require typing 'yes' to confirm.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="faq(this)">What is --explain mode?<span class="faq-icon">+</span></button><div class="faq-a">Adding <code style="font-family:var(--mono)">--explain</code> generates the command as normal, then asks the AI to describe in plain English what it does — great for learning or verifying before running.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="faq(this)">Is my data sent anywhere?<span class="faq-icon">+</span></button><div class="faq-a">Only your query text is sent to Groq's API. No system files, credentials, environment variables, or command output are ever transmitted.</div></div>

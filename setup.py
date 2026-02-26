@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="shellspark",
-    version="1.0.0",
+    version="1.0.1",
     description="Intelligent bash extension that translates natural English commands into terminal commands",
     author="ShellSpark",
     author_email="naitiknayak009@gmail.com",

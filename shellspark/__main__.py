@@ -19,6 +19,11 @@ from .history import append_history, clear_history, show_history
 from .chat import detect_conversational
 from .ai import generate_command, explain_command
 from .safety import classify
+from .intent import (
+    classify_intent,
+    resolve_install_command,
+    IntentType,
+)
 from .executor import confirm_and_run
 from .explainer import explain_last_or_query
 from .logger import log_event
@@ -76,6 +81,12 @@ SAFETY:
   BLOCKED commands are never executed.
   WARNING commands require explicit confirmation (type 'yes').
   Default mode shows the command only — use --run to execute.
+
+DETERMINISM GUARANTEES:
+  ShellSpark never guesses paths or filenames.
+  ShellSpark never auto-executes commands.
+  ShellSpark blocks destructive operations by default.
+  UNKNOWN is an intentional safety response — not a failure.
 
 CONFIG:
   Key file : {CONFIG_FILE}
@@ -173,12 +184,25 @@ def main() -> None:
             f"Unrecognised distro '{distro_id}' — commands may be inaccurate."
         )
 
-    # ── Generate command ──────────────────────────────────────────────────────
-    print_generating()
+    # ── Intent detection and deterministic resolution ─────────────────────────────
+    intent_type = classify_intent(query)
 
-    command = generate_command(
-        query, distro_name, distro_id, package_manager, shell, use_history
-    )
+    if intent_type == IntentType.INSTALL:
+        deterministic_command = resolve_install_command(query, package_manager)
+        if deterministic_command:
+            command = deterministic_command
+        else:
+            print_generating()
+            command = generate_command(
+                query, distro_name, distro_id, package_manager, shell, use_history
+            )
+    else:
+        # ── Generate command ──────────────────────────────────────────────────────
+        print_generating()
+
+        command = generate_command(
+            query, distro_name, distro_id, package_manager, shell, use_history
+        )
 
     # ── Explain mode ──────────────────────────────────────────────────────────
     if explain:
@@ -189,7 +213,7 @@ def main() -> None:
         sys.exit(0)
 
     # ── Safety classification (for logging) ───────────────────────────────────
-    safety_result = classify(command)
+    safety_result = classify(command, intent=intent_type)
 
     # ── Display command with safety ────────────────────────────────────────────
     print_safety_status(safety_result.risk.value, safety_result.reason)
