@@ -37,6 +37,7 @@ from .ui import (
     print_unknown,
     print_unsafe,
     print_blocked,
+    set_plain_mode,
 )
 
 
@@ -118,6 +119,7 @@ def main() -> None:
     run = False  # default: display only
     explain = False
     use_history = True
+    plain = False
 
     if args[0] == "--run":
         run = True
@@ -127,6 +129,10 @@ def main() -> None:
         # explicit dry-run flag (same as default, kept for clarity)
         args = args[1:]
 
+    elif args[0] == "--plain":
+        plain = True
+        args = args[1:]
+
     if args and args[0] == "--explain":
         explain = True
         args = args[1:]
@@ -134,6 +140,10 @@ def main() -> None:
     if args and args[0] == "--no-history":
         use_history = False
         args = args[1:]
+
+    # Apply plain mode
+    if plain:
+        set_plain_mode(True)
 
     if not args:
         print_error("No query provided. See: shellspark --help")
