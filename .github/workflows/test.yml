@@ -1,0 +1,56 @@
+name: ShellSpark CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  cli-tests:
+    name: CLI Tests (${{ matrix.os }} / py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      # Install from source (deterministic validation of packaging + deps)
+      - name: Install ShellSpark
+        run: pip install .
+
+      # Verify entrypoints resolve
+      - name: shellspark --help
+        run: shellspark --help
+
+      - name: sx --help
+        run: sx --help
+
+      # Non-interactive deterministic invocations
+      # Use queries that should never require system state
+      - name: Basic safe query
+        run: shellspark "show current directory"
+
+      - name: Explain mode query
+        run: shellspark --explain "list files"
+
+      # Optional: import-level sanity check
+      - name: Import check
+        run: python - <<EOF
+import sys
+print("Python:", sys.version)
+import shellspark
+print("ShellSpark import OK")
+EOF
