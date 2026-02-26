@@ -10,9 +10,9 @@
 
 <p align="center">
   <a href="https://pypi.org/project/shellspark/"><img src="https://img.shields.io/pypi/v/shellspark?color=blue" alt="PyPI"></a>
-  <a href="https://python.org/downloads/"><img src="https://img.shields.io/pypi/pyversions/shellspark?color=green" alt="Python"></a>
+  <!-- <a href="https://python.org/downloads/"><img src="https://img.shields.io/pypi/pyversions/shellspark?color=green" alt="Python"></a>
   <a href="https://github.com/shellspark/shellspark/blob/main/LICENSE"><img src="https://img.shields.io/pypi/l/shellspark?color=orange" alt="License"></a>
-  <a href="https://github.com/shellspark/shellspark/stargazers"><img src="https://img.shields.io/github/stars/shellspark?color=yellow" alt="Stars"></a>
+  <a href="https://github.com/shellspark/shellspark/stargazers"><img src="https://img.shields.io/github/stars/shellspark?color=yellow" alt="Stars"></a> -->
 </p>
 
 ---
