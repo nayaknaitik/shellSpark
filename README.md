@@ -1,7 +1,7 @@
 # ShellSpark
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/shellspark/shellspark/main/shellspark/assets/logo.png" alt="ShellSpark" width="200"/>
+  <img src="shellSparkLogo.png" alt="ShellSpark" width="200"/>
 </p>
 
 <p align="center">
