@@ -6,8 +6,15 @@ Converts natural language into distribution-specific bash commands.
 
 import sys
 
-from .config import VERSION, GROQ_MODEL, CONFIG_FILE, HISTORY_FILE, ensure_dirs, setup_api_key
-from .system import get_distro_info, get_package_manager
+from .config import (
+    VERSION,
+    GROQ_MODEL,
+    CONFIG_FILE,
+    HISTORY_FILE,
+    ensure_dirs,
+    setup_api_key,
+)
+from .system import get_distro_info, get_package_manager, get_shell
 from .history import append_history, clear_history, show_history
 from .chat import detect_conversational
 from .ai import generate_command, explain_command
@@ -15,6 +22,22 @@ from .safety import classify
 from .executor import confirm_and_run
 from .explainer import explain_last_or_query
 from .logger import log_event
+from .navigator import is_navigation_query, resolve_navigation_command
+from .ui import (
+    console,
+    print_command,
+    print_safety_status,
+    print_error,
+    print_warning,
+    print_success,
+    print_info,
+    print_generating,
+    print_explaining,
+    print_explanation,
+    print_unknown,
+    print_unsafe,
+    print_blocked,
+)
 
 
 def show_help() -> None:
@@ -92,12 +115,12 @@ def main() -> None:
         sys.exit(0)
 
     # ── Query-level flags ─────────────────────────────────────────────────────
-    run         = False   # default: display only
-    explain     = False
+    run = False  # default: display only
+    explain = False
     use_history = True
 
     if args[0] == "--run":
-        run  = True
+        run = True
         args = args[1:]
 
     elif args[0] == "--dry-run":
@@ -106,58 +129,71 @@ def main() -> None:
 
     if args and args[0] == "--explain":
         explain = True
-        args    = args[1:]
+        args = args[1:]
 
     if args and args[0] == "--no-history":
         use_history = False
-        args        = args[1:]
+        args = args[1:]
 
     if not args:
-        print("❌ No query provided. See: shellspark --help")
+        print_error("No query provided. See: shellspark --help")
         sys.exit(1)
 
     query = " ".join(args)
 
+    # ── Navigation query detection ─────────────────────────────────────────────
+    if is_navigation_query(query):
+        command = resolve_navigation_command(query)
+        print(command)
+        sys.exit(0)
+
     # ── Conversational short-circuit (no API key needed) ──────────────────────
     chat_reply = detect_conversational(query)
     if chat_reply is not None:
-        print(chat_reply)
+        console.print(chat_reply)
         sys.exit(0)
 
     # ── Detect system ─────────────────────────────────────────────────────────
     distro_name, distro_id = get_distro_info()
-    package_manager        = get_package_manager(distro_id)
+    package_manager = get_package_manager(distro_id)
+    shell = get_shell()
 
     if package_manager == "unknown":
-        print(f"⚠️  Unrecognised distro '{distro_id}' — commands may be inaccurate.")
+        print_warning(
+            f"Unrecognised distro '{distro_id}' — commands may be inaccurate."
+        )
 
     # ── Generate command ──────────────────────────────────────────────────────
-    print("⏳ Generating...")
+    print_generating()
 
     command = generate_command(
-        query, distro_name, distro_id, package_manager, use_history
+        query, distro_name, distro_id, package_manager, shell, use_history
     )
 
     # ── Explain mode ──────────────────────────────────────────────────────────
     if explain:
-        print(f"\n  \033[97m{command}\033[0m\n")
-        print("⏳ Explaining...")
+        print_command(command)
+        print_explaining()
         explanation = explain_command(command)
-        print(f"\n📖 {explanation}\n")
+        print_explanation(command, explanation)
         sys.exit(0)
 
     # ── Safety classification (for logging) ───────────────────────────────────
     safety_result = classify(command)
 
+    # ── Display command with safety ────────────────────────────────────────────
+    print_safety_status(safety_result.risk.value, safety_result.reason)
+    print_command(command)
+
     # ── Confirm and optionally run ────────────────────────────────────────────
-    return_code = confirm_and_run(command, run=run)
+    return_code = confirm_and_run(command, run=run, safety_result=safety_result)
 
     # ── Log event ─────────────────────────────────────────────────────────────
     log_event(
-        query    = query,
-        command  = command,
-        risk     = safety_result.risk.value,
-        exit_code= return_code if run else None,
+        query=query,
+        command=command,
+        risk=safety_result.risk.value,
+        exit_code=return_code if run else None,
     )
 
     # ── Save to history on clean run ──────────────────────────────────────────
@@ -167,9 +203,9 @@ def main() -> None:
     # ── Exit feedback ─────────────────────────────────────────────────────────
     if run:
         if return_code == 0:
-            print("✅ Done.")
+            print_success("Done.")
         elif return_code not in (130, 1):
-            print(f"⚠️  Exited with code {return_code}.")
+            print_warning(f"Exited with code {return_code}.")
 
     sys.exit(return_code)
 
@@ -178,5 +214,5 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n\n👋 Goodbye!")
+        console.print("\n[dim]👋 Goodbye![/]")
         sys.exit(130)
