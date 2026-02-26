@@ -1,8 +1,8 @@
 name: ShellSpark CI
 
 on:
- push:
- pull_request:
+  push:
+  pull_request:
 
 jobs:
   cli-tests:
@@ -36,11 +36,12 @@ jobs:
       - name: sx --help
         run: sx --help
 
+      # CI-safe deterministic commands (no AI / no API key)
       - name: Basic safe query
-        run: shellspark "show current directory"
+        run: shellspark "pwd"
 
       - name: Explain mode query
-        run: shellspark --explain "list files"
+        run: shellspark --explain "pwd"
 
       - name: Import check
         run: |
