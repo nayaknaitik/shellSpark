@@ -16,6 +16,7 @@ class IntentType(Enum):
     INSTALL = "install"
     NAVIGATE = "navigate"
     DELETE = "delete"
+    EXPLAIN = "explain"     
     GENERIC = "generic"
 
 
@@ -380,13 +381,16 @@ DELETE_PATTERNS = [
     r"\bwipe\b",
     r"\bremove\s+(all|old|unused|unused)\b",
 ]
-
+EXPLAIN_PATTERNS = [
+    r"\bexplain\b",
+    r"\bwhat is\b",
+    r"\bhow does\b",
+    r"\bhow do\b",
+    r"\bmeaning of\b",
+    r"\bdefine\b",
+]
 
 def classify_intent(query: str) -> IntentType:
-    """
-    Classify the intent of the user's query.
-    Returns one of: INSTALL, NAVIGATE, DELETE, GENERIC
-    """
     query_lower = query.lower().strip()
 
     for pattern in DELETE_PATTERNS:
@@ -397,8 +401,11 @@ def classify_intent(query: str) -> IntentType:
         if re.search(pattern, query_lower):
             return IntentType.INSTALL
 
-    return IntentType.GENERIC
+    for pattern in EXPLAIN_PATTERNS:
+        if re.search(pattern, query_lower):
+            return IntentType.EXPLAIN
 
+    return IntentType.GENERIC
 
 def extract_install_target(query: str) -> Optional[str]:
     """

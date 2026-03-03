@@ -8,8 +8,8 @@ import sys
 import re
 import requests
 
-from .config import GROQ_MODEL, GROQ_API_URL, MAX_RETRIES, TIMEOUT
-from .history import load_history
+from shellspark.core.config import GROQ_MODEL, GROQ_API_URL, MAX_RETRIES, TIMEOUT
+from shellspark.engine.history import load_history
 
 # ── Prompts ───────────────────────────────────────────────────────────────────
 
@@ -112,7 +112,7 @@ def _post(messages: list[dict], max_tokens: int = 300) -> str:
     Handles retries, connection errors, and HTTP error codes.
     Returns the raw model response text.
     """
-    from .config import get_api_key
+    from shellspark.core.config import get_api_key
 
     api_key = get_api_key()
 

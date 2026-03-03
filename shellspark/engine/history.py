@@ -3,7 +3,7 @@ history.py — Conversation history management for ShellSpark.
 """
 
 import json
-from .config import HISTORY_FILE, MAX_HISTORY, ensure_dirs
+from shellspark.core.config import HISTORY_FILE, MAX_HISTORY, ensure_dirs
 
 
 def load_history() -> list[dict]:

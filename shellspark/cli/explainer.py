@@ -4,8 +4,8 @@ explainer.py — --explain mode for ShellSpark.
 Fetches a plain-English explanation of the last generated command.
 """
 
-from .ai import explain_command
-from .history import load_history
+from shellspark.engine.ai import explain_command
+from shellspark.engine.history import load_history
 
 
 def explain_last_or_query(query: str | None = None) -> None:

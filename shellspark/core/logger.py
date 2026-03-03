@@ -6,7 +6,7 @@ Writes one JSON line per event to ~/.shellspark/logs/activity.log
 
 import json
 from datetime import datetime, timezone
-from .config import ACTIVITY_LOG, ensure_dirs
+from shellspark.core.config import ACTIVITY_LOG, ensure_dirs
 
 
 def log_event(

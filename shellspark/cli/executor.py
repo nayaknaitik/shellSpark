@@ -10,7 +10,7 @@ import subprocess
 import sys
 from typing import Optional
 
-from .safety import SafetyResult, classify, Risk
+from shellspark.engine.safety import SafetyResult, classify, Risk
 from .ui import (
     console,
     print_command,

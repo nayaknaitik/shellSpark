@@ -12,8 +12,8 @@ setup(
     install_requires=["requests>=2.28.0", "rich>=13.0.0"],
     entry_points={
         "console_scripts": [
-            "shellspark=shellspark.__main__:main",
-            "sx=shellspark.__main__:main",
+            "shellspark=shellspark.cli.app:main",
+            "sx=shellspark.cli.app:main",
         ],
     },
     python_requires=">=3.8",

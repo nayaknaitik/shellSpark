@@ -10,7 +10,7 @@ import re
 from enum import Enum
 from typing import Optional
 
-from .intent import IntentType as IntentTypeEnum
+from shellspark.engine.intent import IntentType as IntentTypeEnum
 
 
 class Risk(Enum):

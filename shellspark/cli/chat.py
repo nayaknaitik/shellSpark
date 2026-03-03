@@ -5,8 +5,8 @@ Handles greetings, identity questions, thanks, and goodbyes
 without making any API calls.
 """
 
-from .config import VERSION, GROQ_MODEL
-from .system import get_distro_info, get_package_manager
+from shellspark.core.config import VERSION, GROQ_MODEL
+from shellspark.core.system import get_distro_info, get_package_manager
 
 # ── Trigger word sets ─────────────────────────────────────────────────────────
 
